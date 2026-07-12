@@ -1,5 +1,6 @@
 # RAS-SR-SRM-Characterization
 Scripts for characterization for RAS Space Raiders solid rocket motors.
+
 NOTE: CURRENTLY ONLY BATES GRAINS ARE SUPPORTED!
 
 ### Reference
@@ -25,29 +26,32 @@ pyyaml
 ### Configuration File Formatting
 Sample entry:
 ```
-!CONFIGSTART
-filename test_data_propellant1.xlsx psig lbf
-psmoothing off
-tsmoothing off
-geometry in 3.139,0.75,1.8||3.139,0.75,1.8||3.139,0.75,1.8||3.139,1,1.8
-throat in 0.546 0.531 0.515
-mass lb 1.525 1.525 1.525
-density lb/in3 0.0589986 0.0589986 0.0589986
-!CONFIGEND
-!CONFIGSTART
-filename test_data_propellant2.xlsx psig lbf
-psmoothing off
-tsmoothing on 0.075 0.075 0.075 0.075 0.075 0.075
-geometry in 3.05,0.5,1.8||3.25,0.75,1.8
-throat in 0.344 0.327 0.344 0.327 0.3195 0.289
-mass lb 0.7782 0.7782 0.7782 0.7782 0.7782 0.7782
-density lb/in3 0.0556 0.0556 0.0556 0.0556 0.0556 0.0556
-!CONFIGEND
+dataFilepath: '.\example_data_propellant1.xlsx' #full path OR relative path with respect to the .yaml file to the .xlsx data file containing formatted static fire data 
+
+pressUnits: "psig" #"psig" or kPa
+thrustUnits: "lbf" #"lbf" or "N"
+
+psmoothing: [-1, -1, -1] #array for pressure smoothing values: set to -1 for no smoothing, and set to a value between 0 and 1 for smoothing (higher number -> more smoothing)
+tsmoothing: [-1, -1, -1] #array for thrust smoothing values
+
+geometryUnits: "in" #"in" or "mm"
+geometry: [[3.139,0.75,1.8], [3.139,0.75,1.8], [3.139,0.75,1.8], [3.139,1,1.8]] #geometry information: starting with the forwardmost grain and ending with the aftmost grain, one array for each grain with the grain length, core diameter, and outer diameter in that order
+
+throatUnits: "in" #"in" or "mm"
+throatDiameter: [0.546, 0.531, 0.515] #array of throat diameters for each fire
+
+massUnits: "lb" #"lb" or "kg"
+mass: [1.525, 1.525, 1.525] #array of mass values for each fire
+
+densityUnits: "lb/in3" #"lb/in3" or "kg/m3"
+density: [0.0589986, 0.0589986, 0.0589986] #array of density values for each fire
 ```
 Configuration file formatting details:
-* Line 1: `!CONFIGSTART` is the start of a characterization entry.
-* Line 2: `file test_data.xlsx psig lbf` denotes the filename ("test_data.xlsx" here) and the pressure and thrust units associated with this static fire (here psig and lbf). Only `psig` and `kPa` (psi gauge and kilopascals) are accepted entries for pressure, and only `lbf` and `N` (pounds-force and Newtons) are accepted entries for thrust. This file should have worksheets with data from each static fire.
-* Line 3-4. Denotes wherther smoothing is turned on or off for pressure (`psmoothing`) and thrust (`tsmoothing`) data. If turned on, the six following numbers separated by spaces denotes the window spacing (i.e. how much smoothing there should be; a higher value corresponds to more smoothing). If you want smoothing on some tests and not others, set the number to -1 for tests you do not want smoothing for.
+* `dataFilepath`: (explanation). This file should have worksheets with data from each static fire.
+* `pressUnits`: Units for pressure data. Only `psig` and `kPa` (psi gauge and kilopascals) are accepted entries.
+* `thrustUnits`: Units for thrust data. Only `lbf` and `N` (pounds-force and Newtons) are accepted entries.
+* `psmoothing` & `tsmoothing`: Array containing data denoting whether smoothing is turned on or off for pressure (`psmoothing`) and thrust (`tsmoothing`) data for each fire. Entries of -1 denote smoothing turned off, and values between 0 and 1 directly correspond to the window spacing for smoothing (i.e. how much smoothing there should be; a higher value corresponds to more smoothing).
+* 
 * Line 5: `geometry in 3.139,0.75,1.8||3.139,0.75,1.8||3.139,0.75,1.8||3.139,1,1.8` denotes the geometry of the motor being tested. `in` denotes the units being used in this line (here inches). Only `in` and `mm` (inches and millimeters) are accepted entries. Separated by a double bar `||`, the grain length, core diameter, and outer diameter for each grain is entered, starting with the forwardmost grain and ending with the aftmost grain. (In this example, there are four grains with a length of 3.139". The forwardmost three grains have a core diameter of 0.75" and the aftmost grain has a core diameter of 1". And the outer diameter for all four grains is 1.8".)
 * Line 6: `throat in 0.546 0.531 0.515` denotes the throat diameter for each fire with data in the entered Excel workbook. `in` denotes the units being used in this line (here inches). Only `in` and `mm` (inches and millimeters) are accepted entries. These numbers must be entered in the order in which the fires appear as worksheets in the Excel workbook given in Line 2 of the configuration. If there are multiple fires with the same throat diameter, it must be entered multiple times.
 * Line 7: Propellant mass for each fire with data in the entered Excel workbook in the order in which the fires appear in the workbook. Accepted units are `lb` or `kg` (pounds or kilograms).
