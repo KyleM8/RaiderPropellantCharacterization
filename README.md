@@ -24,7 +24,7 @@ openpyxl
 pyyaml
 
 ### Configuration File Formatting
-Sample entry:
+Sample .yaml file:
 ```
 dataFilepath: '.\example_data_propellant1.xlsx' #full path OR relative path with respect to the .yaml file to the .xlsx data file containing formatted static fire data 
 
@@ -51,20 +51,27 @@ Configuration file formatting details:
 * `pressUnits`: Units for pressure data. Only `psig` and `kPa` (psi gauge and kilopascals) are accepted entries.
 * `thrustUnits`: Units for thrust data. Only `lbf` and `N` (pounds-force and Newtons) are accepted entries.
 * `psmoothing` & `tsmoothing`: Array containing data denoting whether smoothing is turned on or off for pressure (`psmoothing`) and thrust (`tsmoothing`) data for each fire. Entries of -1 denote smoothing turned off, and values between 0 and 1 directly correspond to the window spacing for smoothing (i.e. how much smoothing there should be; a higher value corresponds to more smoothing).
-* 
-* Line 5: `geometry in 3.139,0.75,1.8||3.139,0.75,1.8||3.139,0.75,1.8||3.139,1,1.8` denotes the geometry of the motor being tested. `in` denotes the units being used in this line (here inches). Only `in` and `mm` (inches and millimeters) are accepted entries. Separated by a double bar `||`, the grain length, core diameter, and outer diameter for each grain is entered, starting with the forwardmost grain and ending with the aftmost grain. (In this example, there are four grains with a length of 3.139". The forwardmost three grains have a core diameter of 0.75" and the aftmost grain has a core diameter of 1". And the outer diameter for all four grains is 1.8".)
-* Line 6: `throat in 0.546 0.531 0.515` denotes the throat diameter for each fire with data in the entered Excel workbook. `in` denotes the units being used in this line (here inches). Only `in` and `mm` (inches and millimeters) are accepted entries. These numbers must be entered in the order in which the fires appear as worksheets in the Excel workbook given in Line 2 of the configuration. If there are multiple fires with the same throat diameter, it must be entered multiple times.
-* Line 7: Propellant mass for each fire with data in the entered Excel workbook in the order in which the fires appear in the workbook. Accepted units are `lb` or `kg` (pounds or kilograms).
-* Line 8: Propellant density for each fire with data in the entered Excel workbook in the order in which the fires appear in the workbook. Accepted units are `lb/in3` or `kg/m3` (pounds per cubic inch or kilograms per cubic meters).
-* Line 9: `!CONFIGEND` denotes the end of a characterization entry. If another characterization entry is desired within the same configuration file, this series of 7 lines can be repeated for another series of fires.
+* `geometryUnits`: Units used for the motor geometry. Only `in` and `mm` (inches and millimeters) are accepted entries.
+* `geometry`: A 2D array containing geometry information for the motor being tested. Starting from the forwardmost grain and ending with the aftmost grain, each array contains the grain length, core diameter, and outer diameter. (In this example, there are four grains with a length of 3.139". The forwardmost three grains have a core diameter of 0.75" and the aftmost grain has a core diameter of 1". And the outer diameter for all four grains is 1.8".)
+* `throatUnits`: Units used for the throat diameter. Only `in` and `mm` (inches and millimeters) are accepted entries.
+* `throatDiameter`: Array of throat diameters for each fire. Again, these numbers must be entered in the order in which the fires appear as worksheets in the Excel workbook given at the beginning of the configuration. If there are multiple fires with the same throat diameter, it must be entered multiple times.
+* `massUnits`: Units for propellant mass. Accepted units are `lb` or `kg` (pounds or kilograms).
+* `mass`: Array of propellant mass values for each fire with data in the entered Excel workbook in the order in which the fires appear in the workbook.
+* `densityUnits`: Units for propellant density. Accepted units are `lb/in3` or `kg/m3` (pounds per cubic inch or kilograms per cubic meters).
+* `density`: Propellant density for each fire with data in the entered Excel workbook in the order in which the fires appear in the workbook.
 
-Ensure there are no unnecessary spaces in the entry (a double-space or a space after a line could mess up the parsing of the config file).
+The file should be a .yaml file and the full path to the file must be included as the first argument in the command line call to run the Characterization.py script.
 
-The file should be a regular .txt file and the filename and path must be denoted in the characterization script (details in comments in the script). The configuration file as well as the Excel workbook(s) must be stored in the `dat` folder.
+Currently, running two different propellants (i.e. two sets of static fires) at the same time is not supported.
 
-The benefit of using this configuration file is that changing the configuration file name in the script is the only change required to the script for any run.
+### Running the Code
+(This method is in process and not final yet. Some changes may be made to this method)
 
-Note that for one propellant, only one 9-line entry is required.
+Open a command line from which you can run python programs. The command line prompt to run the program is:
+`python <path to Characterization.py> "<path to input.yaml file>" "<path to folder in which output files should be created>"`
+
+The easiest way to call this command is to use the command line to navigate to the `src` folder (where the Characterization.py script is stored). Then, assuming it is ok that output files will be created in the same directory as the script, the command line prompt would be:
+`python Characterization.py "<path to input.yaml file>" "."`
 
 ### Excel Formatting
 Each workbook used with this script must include sheets that include data for each fire. The first column of each sheet should be time, the second column should be pressure, and the third column should be thrust. It doesn't matter if the data has a header or not (but if it does, this header must not be more than one row). Example inputs and outputs are included in this repository. Ensure your entries follow the established format, or the code will not work.
