@@ -1,0 +1,19 @@
+dataFilepath: '.\example_data_propellant1.xlsx' #full path OR relative path with respect to the .yaml file to the .xlsx data file containing formatted static fire data 
+
+pressUnits: "psig" #"psig" or kPa
+thrustUnits: "lbf" #"lbf" or "N"
+
+psmoothing: [-1, -1, -1] #array for pressure smoothing values: set to -1 for no smoothing, and set to a value between 0 and 1 for smoothing (higher number -> more smoothing)
+tsmoothing: [-1, -1, -1] #array for thrust smoothing values
+
+geometryUnits: "in" #"in" or "mm"
+geometry: [[3.139,0.75,1.8], [3.139,0.75,1.8], [3.139,0.75,1.8], [3.139,1,1.8]] #geometry information: starting with the forwardmost grain and ending with the aftmost grain, one array for each grain with the grain length, core diameter, and outer diameter in that order
+
+throatUnits: "in" #"in" or "mm"
+throatDiameter: [0.546, 0.531, 0.515] #array of throat diameters for each fire
+
+massUnits: "lb" #"lb" or "kg"
+mass: [1.525, 1.525, 1.525] #array of mass values for each fire
+
+densityUnits: "lb/in3" #"lb/in3" or "kg/m3"
+density: [0.0589986, 0.0589986, 0.0589986] #array of density values for each fire
