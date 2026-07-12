@@ -13,16 +13,7 @@ Nakka characterization resources:
 This program uses the method listed at the PTBurn link to calculate the regression and burn rate, but uses the average burn rate and pressure over several different static test fires to obtain a more representative solution.
 
 ### Dependencies
-If you are not using the .exe release, the libraries imported in the Characterization.py file are required: you must have these libraries installed for this software to run correctly. If you believe there is an error caused by a library version issue, please contact me; there have been issues with this in the past.
-argparse
-os
-pandas
-scipy
-numpy
-math
-matplotlib
-openpyxl
-pyyaml
+If you are not using the .exe release, the libraries imported in the Characterization.py file are required: you must have these libraries installed for this software to run correctly. If you believe there is an error caused by a library version issue, please contact me; there have been issues with this in the past. Mandatory libraries include: `argparse`, `os`, `pandas`, `scipy`, `numpy`, `math`, `matplotlib`, `openpyxl`, `pyyaml`.
 
 ### Configuration File Formatting
 Sample .yaml file:
