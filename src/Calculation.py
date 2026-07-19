@@ -1,3 +1,21 @@
+"""
+RaiderPropellantCharacterization - Program for interpretation of subscale static fire data to characterize solid rocket motor propellants.
+Copyright (C) 2026 Kyle Markel
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+"""
+
 class Calculation:
 
     #any and all necessary calculations and unit conversions are here. units are exclusively metric (N, Pa, kg, kg/m^3, m, etc.)

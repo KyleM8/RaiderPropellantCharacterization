@@ -1,4 +1,5 @@
-dataFilepath: '.\example_data_propellant1.xlsx' #full path OR relative path with respect to the .yaml file to the .xlsx data file containing formatted static fire data 
+#dataFilepath not required when using GUI
+#dataFilepath: '.\example_data_propellant1.xlsx' #full path OR relative path with respect to the .yaml file to the .xlsx data file containing formatted static fire data 
 
 pressUnits: "psig" #"psig" or kPa
 thrustUnits: "lbf" #"lbf" or "N"

@@ -1,3 +1,21 @@
+"""
+RaiderPropellantCharacterization - Program for interpretation of subscale static fire data to characterize solid rocket motor propellants.
+Copyright (C) 2026 Kyle Markel
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+"""
+
 # ------------------ IMPORT ----------------
 import os
 import pandas as pd
@@ -12,7 +30,8 @@ import matplotlib.pyplot as plt
 import openpyxl
 from openpyxl import Workbook
 import yaml
-import argparse
+import FreeSimpleGUI as sg
+import time
 
 
 # ----------------------------- GLOBAL VARIABLES ----------------------------
@@ -29,25 +48,47 @@ def throwParseError():
     raise SystemExit(1)
 
 
+#opens GUI and reads provided input
+def useGUI():
+    global configFilepath, outputPath, dataFilepath
+
+    #create window for selecting the three inputs
+    sg.theme('PythonPlus')
+    layout = [  [sg.Text('Select configuration file (*.yaml):')],
+                [sg.Input(key="configFilepath_GUIINPUT", enable_events=True), sg.FileBrowse(file_types=(("YAML File", "*.yaml"),))],
+                [sg.Text('\n\nSelect data file (*.xlsx):')],
+                [sg.Input(key="dataFilepath_GUIINPUT", enable_events=True), sg.FileBrowse(file_types=(("Excel File", "*.xlsx"),("Excel File - Macro Enabled", "*.xlsm"),))],
+                [sg.Text('\n\nSelect output folder:')],
+                [sg.Input(key="outputPath_GUIINPUT", enable_events=True), sg.FolderBrowse("Browse")],
+                [sg.Button('Perform Characterization Calculations'), sg.Button('Cancel')] ]
+
+    window = sg.Window('RaiderPropellantCharacterization', layout) #show the window
+
+    #event loop listening for a button click
+    while True:
+        event, values = window.read()
+        if event == 'Perform Characterization Calculations':
+            configFilepath = values.get('configFilepath_GUIINPUT')
+            dataFilepath = values.get('dataFilepath_GUIINPUT')
+            outputPath = values.get('outputPath_GUIINPUT')
+            window.close()
+            break
+        if event == sg.WIN_CLOSED or event == 'Cancel': # if user closes window or clicks cancel; unsure if this works currently
+            print('Process canceled, exiting.')
+            window.close()
+            raise SystemExit(1)
+
+
 #reads input file, creates TestFire objects, and adds them to the testFire array
 #currently only supporting one propellant (one set of static fires) at a time
 def readInputFile():
     global configFilepath, outputPath, dataFilepath, testFires
 
-    #parse file paths given in command line
-    parser = argparse.ArgumentParser(description="An elegant CLI tool.")
-    parser.add_argument("configFilepath", help="Positional argument (required configuration file path)")
-    parser.add_argument("outputPath", help="Path where output folder should be created")
-    args = parser.parse_args()
-    configFilepath = args.configFilepath
-    outputPath = args.outputPath
-    if outputPath == ".": outputPath = os.path.abspath(__file__).rsplit('\\', 1)[0] #sets correct path if the current directory is chosen as the output path
-
     #read .yaml file
     with open(configFilepath, 'r') as file:
         loaded_input_data = yaml.safe_load(file)
-    dataFilepath = loaded_input_data.get('dataFilepath')
-    if (dataFilepath.startswith('.')): dataFilepath = configFilepath.rsplit('\\', 1)[0] + dataFilepath[1:] #sets correct path to data file if path is written as a relative path to the .yaml file
+    #dataFilepath = loaded_input_data.get('dataFilepath') #these two lines no longer required without the command line option
+    #if (dataFilepath.startswith('.')): dataFilepath = configFilepath.rsplit('\\', 1)[0] + dataFilepath[1:] #sets correct path to data file if path is written as a relative path to the .yaml file
 
     throatDiameter = loaded_input_data.get('throatDiameter')
 
@@ -109,7 +150,7 @@ def smoothData(data, time, window_duration):
 
 
 #reads data from Excel and adds it to each TestFire object
-def readExcelData(allConfigs):
+def readExcelData():
     x = 0
     for tfList in testFires:
         y = 0
@@ -640,14 +681,19 @@ def printAllTestFireListAttributes():
     for tfList in testFires:
         y = 0
         for tf in tfList:
-            TestFire.printAllAttributes(tf)
+            print(f"\nAttributes of {tf.__class__.__name__}:\n" + "-" * 40)
+            for attr, value in vars(tf).items():
+                print(f"{attr}: {value}")
+            print("-" * 40)
             y += 1
         x += 1
 
 def main():
+
     #import data
-    allConfigs = readInputFile()
-    readExcelData(allConfigs)
+    useGUI()
+    readInputFile()
+    readExcelData()
     printAllTestFireListAttributes()
 
     #characterization calculations
@@ -656,5 +702,6 @@ def main():
     
     #results
     outputResults()
+
 
 main()

@@ -1,5 +1,5 @@
 # RaiderPropellantCharacterization
-Script for interpretation of subscale static fire data to characterize propellants.
+Program for interpretation of subscale static fire data to characterize propellants.
 Developed for Raider Aerospace Society (Space Raiders).
 
 NOTE: CURRENTLY ONLY BATES GRAINS ARE SUPPORTED!
@@ -13,7 +13,7 @@ Nakka characterization resources:
 This program uses the method listed at the PTBurn link to calculate the regression and burn rate, but uses the average burn rate and pressure over several different static test fires to obtain a more representative solution.
 
 ### Dependencies
-If you are not using the .exe release (still to come), the libraries imported in the Characterization.py file are required: you must have these libraries installed for this software to run correctly. If you believe there is an error caused by a library version issue, please contact me; there have been issues with this in the past. Mandatory libraries include: `argparse`, `os`, `pandas`, `scipy`, `numpy`, `math`, `matplotlib`, `openpyxl`, `pyyaml`.
+If you are not using the .exe release (still to come), the libraries imported in the Characterization.py file are required: you must have these libraries installed for this software to run correctly. If you believe there is an error caused by a library version issue, please contact me; there have been issues with this in the past. Mandatory libraries include: `argparse`, `os`, `pandas`, `scipy`, `numpy`, `math`, `matplotlib`, `openpyxl`, `pyyaml`, `FreeSimpleGUI`.
 
 ### Configuration File Formatting
 Sample .yaml file:
@@ -57,16 +57,16 @@ The file should be a .yaml file and the full path to the file must be included a
 Currently, running two different propellants (i.e. two sets of static fires) at the same time is not supported.
 
 ### Running the Code
-(This method is in process and not final yet. Some changes may be made to this method)
+The main method for this program is contained in `Characterization.py`. It can be called from the command line: `python <path to Characterization.py>` or run from your preferred IDE. Currently there is no single-file .exe distribution, however, this would be one of the next steps towards making this more user-friendly.
 
-Open a command line from which you can run python programs. The command line prompt to run the program is:
-`python <path to Characterization.py> "<path to input.yaml file>" "<path to folder in which output files should be created>"`
+### Input Data Excel Formatting
+Each workbook used with this script must be composed of worksheets that include data for each fire. The first column of each sheet should be time, the second column should be pressure, and the third column should be thrust. It doesn't matter if the data has a header or not (but if it does, this header must not be more than one row). Example inputs and outputs are included in this repository. Ensure your entries follow the established data input format, or the code will not work.
 
-The easiest way to call this command is to use the command line to navigate to the `src` folder (where the Characterization.py script is stored). Then, assuming it is ok that output files will be created in the same directory as the script, the command line prompt would be:
-`python Characterization.py "<path to input.yaml file>" "."`
+### Outputs
+The code outputs a variety of simple plots for quick sanity checks (in the future these plots should be refined), as well as an Excel sheet with all the calculated data from all static fires in both Imperial and SI units and, of course, the burn rate laws.
 
-### Excel Formatting
-Each workbook used with this script must include sheets that include data for each fire. The first column of each sheet should be time, the second column should be pressure, and the third column should be thrust. It doesn't matter if the data has a header or not (but if it does, this header must not be more than one row). Example inputs and outputs are included in this repository. Ensure your entries follow the established format, or the code will not work.
+### CHECK YOUR INPUTS!
+The most common cause of inacurrate output is inaccurate input!
 
-### TRIPLE AND QUADRUPLE CHECK YOUR INPUTS! THE MOST COMMON CAUSE OF INACCURATE OUTPUT IS INACCURATE INPUT!
-GARBAGE IN = GARBAGE OUT
+### Release Notes
+Please note that I consider this a v0.4 release. It has full functionality in terms of being able to characterize propellants, however, it does not have a single-file .exe distribution, the plots could be improved, and some additional features and statistics could be added. This repository is licensed under GNU GPLv3, so changes and improvements to the functionality of this program are welcomed.
