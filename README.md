@@ -4,6 +4,7 @@ Developed for Raider Aerospace Society (Space Raiders).
 
 NOTE: CURRENTLY ONLY BATES GRAINS ARE SUPPORTED!
 
+
 ### Reference
 Nakka characterization resources:
 [Nakka PTBurn](https://www.nakka-rocketry.net/ptburn.html)
@@ -12,8 +13,10 @@ Nakka characterization resources:
 
 This program uses the method listed at the PTBurn link to calculate the regression and burn rate, but uses the average burn rate and pressure over several different static test fires to obtain a more representative solution.
 
+
 ### Dependencies
 If you are not using the .exe release (still to come), the libraries imported in the Characterization.py file are required: you must have these libraries installed for this software to run correctly. If you believe there is an error caused by a library version issue, please contact me; there have been issues with this in the past. Mandatory libraries include: `os`, `pandas`, `scipy`, `numpy`, `math`, `matplotlib`, `openpyxl`, `pyyaml`, `FreeSimpleGUI`.
+
 
 ### Configuration File Formatting
 Sample .yaml file:
@@ -57,7 +60,9 @@ Currently, running two different propellants (i.e. two sets of static fires) at 
 The main method for this program is contained in `Characterization.py`. It can be called from the command line: `python <path to Characterization.py>` or run from your preferred IDE. Just ensure you have all the requisite libraries installed and updated. Currently there is no single-file .exe distribution, however, this would be one of the next steps towards making this more user-friendly.
 
 When the code is run, a GUI window will open:
+
 <img width="512" height="382" alt="image" src="https://github.com/user-attachments/assets/81bfaeae-d05a-4677-9750-76d00842930f" />
+
 Click the "Browse" button near the entries for each file and select the input files (the .yaml for the YAML input, the .xlsx for the input static fire data, and the directory where the folder for the output files should be created).
 
 Once all the files have been selected, click the "Perform Characterization Calculations" button. This will begin the characterization calculations, which usually take only a few seconds. Writing to the output Excel file can take longer depending on how much data there is (i.e. how many lines are in the input Excel). Status messages will be printed to the terminal; the final two lines should read:
@@ -72,8 +77,10 @@ The code outputs a variety of simple plots for quick sanity checks (in the futur
 <img width="1867" height="777" alt="image" src="https://github.com/user-attachments/assets/0343fc22-4816-4bb1-89ab-a3a0f54fe849" />
 <img width="353" height="267" alt="image" src="https://github.com/user-attachments/assets/eb0dd6d7-1436-4789-9da0-5d8e41ea25f7" />
 
+
 ### Input Data Excel Formatting
 Each workbook used with this script must be composed of worksheets that include data for each fire. The first column of each sheet should be time, the second column should be pressure, and the third column should be thrust. It doesn't matter if the data has a header or not (but if it does, this header must not be more than one row). Example inputs and outputs are included in this repository. Ensure your entries follow the established data input format, or the code will not work.
+
 
 ### CHECK YOUR INPUTS!
 The most common cause of inacurrate output is inaccurate input!
