@@ -1,6 +1,6 @@
 # RaiderPropellantCharacterization
 Program for interpretation of subscale static fire data to characterize propellants.
-Developed for Raider Aerospace Society (Space Raiders).
+Developed for Raider Aerospace Society (Space Raiders) at Texas Tech University.
 
 NOTE: CURRENTLY ONLY BATES GRAINS ARE SUPPORTED!
 <br>
