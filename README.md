@@ -88,4 +88,4 @@ The most common cause of inacurrate output is inaccurate input!
 <br>
 
 ## Version/Update Notes
-Please note that this should be considered something like a v0.4 release. It has full functionality in terms of being able to characterize propellants, however, it does not have a single-file .exe distribution, the plots could be improved, and some additional features and statistics could be added. This repository is licensed under GNU GPLv3, so changes and improvements to the functionality of this program are welcomed.
+Please note that this should be considered a v0.5 release. It has full functionality in terms of being able to characterize propellants, however, it does not have a single-file .exe distribution, the plots could be improved, and some additional features and statistics could be added. This repository is licensed under GNU GPLv3, so changes and improvements to the functionality of this program are welcomed.
