@@ -4,6 +4,7 @@ Developed for Raider Aerospace Society (Space Raiders).
 
 NOTE: CURRENTLY ONLY BATES GRAINS ARE SUPPORTED!
 
+<br>
 
 ### Reference
 Nakka characterization resources:
@@ -13,10 +14,12 @@ Nakka characterization resources:
 
 This program uses the method listed at the PTBurn link to calculate the regression and burn rate, but uses the average burn rate and pressure over several different static test fires to obtain a more representative solution.
 
+<br>
 
 ### Dependencies
 If you are not using the .exe release (still to come), the libraries imported in the Characterization.py file are required: you must have these libraries installed for this software to run correctly. If you believe there is an error caused by a library version issue, please contact me; there have been issues with this in the past. Mandatory libraries include: `os`, `pandas`, `scipy`, `numpy`, `math`, `matplotlib`, `openpyxl`, `pyyaml`, `FreeSimpleGUI`.
 
+<br>
 
 ### Configuration File Formatting
 Sample .yaml file:
@@ -77,13 +80,17 @@ The code outputs a variety of simple plots for quick sanity checks (in the futur
 <img width="1867" height="777" alt="image" src="https://github.com/user-attachments/assets/0343fc22-4816-4bb1-89ab-a3a0f54fe849" />
 <img width="353" height="267" alt="image" src="https://github.com/user-attachments/assets/eb0dd6d7-1436-4789-9da0-5d8e41ea25f7" />
 
+<br>
 
 ### Input Data Excel Formatting
 Each workbook used with this script must be composed of worksheets that include data for each fire. The first column of each sheet should be time, the second column should be pressure, and the third column should be thrust. It doesn't matter if the data has a header or not (but if it does, this header must not be more than one row). Example inputs and outputs are included in this repository. Ensure your entries follow the established data input format, or the code will not work.
 
+<br>
 
 ### CHECK YOUR INPUTS!
 The most common cause of inacurrate output is inaccurate input!
+
+<br>
 
 ### Version/Update Notes
 Please note that this should be considered something like a v0.4 release. It has full functionality in terms of being able to characterize propellants, however, it does not have a single-file .exe distribution, the plots could be improved, and some additional features and statistics could be added. This repository is licensed under GNU GPLv3, so changes and improvements to the functionality of this program are welcomed.
