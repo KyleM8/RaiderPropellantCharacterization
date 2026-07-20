@@ -63,7 +63,7 @@ The main method for this program is contained in `Characterization.py`. It can b
 Each workbook used with this script must be composed of worksheets that include data for each fire. The first column of each sheet should be time, the second column should be pressure, and the third column should be thrust. It doesn't matter if the data has a header or not (but if it does, this header must not be more than one row). Example inputs and outputs are included in this repository. Ensure your entries follow the established data input format, or the code will not work.
 
 ### Outputs
-The code outputs a variety of simple plots for quick sanity checks (in the future these plots should be refined), as well as an Excel sheet with all the calculated data from all static fires in both Imperial and SI units and, of course, the burn rate laws.
+The code outputs a variety of simple plots for quick sanity checks (in the future these plots should be refined), as well as an Excel sheet with all the calculated data from all static fires in both Imperial and SI units and, of course, the burn rate laws. Please note: after the output directory is selected, the program checks for previous folders (`out1`, `out2`, etc.) in the chosen directory and names the new output folder with this in mind so that any new output will not overwrite any previous output.
 
 ### CHECK YOUR INPUTS!
 The most common cause of inacurrate output is inaccurate input!

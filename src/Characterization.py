@@ -27,11 +27,9 @@ from scipy.ndimage import gaussian_filter1d
 import numpy as np
 import math
 import matplotlib.pyplot as plt
-import openpyxl
 from openpyxl import Workbook
 import yaml
 import FreeSimpleGUI as sg
-import time
 
 
 # ----------------------------- GLOBAL VARIABLES ----------------------------
@@ -87,14 +85,12 @@ def readInputFile():
     #read .yaml file
     with open(configFilepath, 'r') as file:
         loaded_input_data = yaml.safe_load(file)
-    #dataFilepath = loaded_input_data.get('dataFilepath') #these two lines no longer required without the command line option
-    #if (dataFilepath.startswith('.')): dataFilepath = configFilepath.rsplit('\\', 1)[0] + dataFilepath[1:] #sets correct path to data file if path is written as a relative path to the .yaml file
 
+    #creates TestFire objects and sets all TestFire parameters
     throatDiameter = loaded_input_data.get('throatDiameter')
-
     arr = []
     for i in range(len(throatDiameter)): #for each fire, set filename, pressure units, thrust units, geometry units, geometry, throat units, and throat
-        testFire = TestFire()
+        testFire = TestFire() #create TestFire object
         testFire.set_fireIndex(i)
 
         #set sheetnames
@@ -257,7 +253,6 @@ def conversionsAndDefinitions():
 
 
 #function to perform all characterization calculations
-#probably use either scipy.optimize.root_scalar() or scipy.optimize.fsolve()
 def characterization():
     """
     function arguments:
@@ -338,6 +333,7 @@ def characterization():
         print("Finished characterization calculation for propellant #" + str(x+1))
         x += 1
 
+
 #function to perform conversions of important output data back to imperial and output to an Excel sheet
 def outputResults():
     """
@@ -370,8 +366,7 @@ def outputResults():
     C*
     ISP
     """
-    #create folder for output files:
-    #make "out1", "out2", etc., but back one folder, so you'll have three folders: "src", "dat", and "out1" after running
+    #create folder for output files in the requested directory ("out1", "out2", etc., such that no folder will be overwritten):
     outputFolderNum = 1
     outputFileBase = outputPath+'/out'
     outputFileDir = ""
@@ -386,7 +381,7 @@ def outputResults():
         wb = Workbook()
         file_path = outputFileDir + "/out"+str(x)+".xlsx"
         wb.save(file_path)
-        excelWriter = pd.ExcelWriter(file_path, engine='openpyxl', mode='a', if_sheet_exists='overlay') #REQUIRES OPENPYXL LIBRARY!!!
+        excelWriter = pd.ExcelWriter(file_path, engine='openpyxl', mode='a', if_sheet_exists='overlay') #requires openpyxl library
 
         #lists for average pressure and average burn rate for characterization
         avgPress = []
@@ -467,17 +462,17 @@ def outputResults():
             #burn rate vs time and burn area vs time (metric)
             fig, ax1 = plt.subplots(figsize=(13, 8))
             #plot burn rate
-            ax1.plot(time, ds_dt, marker='o', linestyle='-', color="b", label="Burn rate ds/dt")
+            ax1.plot(time, ds_dt, marker='o', linestyle='-', color="b", label=r"Burn rate $ds/dt$")
             ax1.set_xlabel("Time (sec)")
             ax1.set_ylabel("Burn rate (mm/sec)")
             handles1, labels1 = ax1.get_legend_handles_labels()
             #plot burn area
             ax2 = ax1.twinx() #creates another axis that shares the x-axis
             #A_b = [i * 1000000 for i in calc.get_A_bArr()] #use for conversion to mm^2
-            ax2.plot(time, A_b, marker='^', linestyle='-', color="r", label="Burn area A_b")
+            ax2.plot(time, A_b, marker='^', linestyle='-', color="r", label=r"Burn area $A_{b}$")
             #ax2.set_ylim(top=max(A_b)*2)
             #ax2.set_ylim(bottom=0)
-            ax2.set_ylabel("Burn area (m^2)")
+            ax2.set_ylabel(r"Burn area ($m^{2}$)")
             handles2, labels2 = ax2.get_legend_handles_labels()
             #show
             all_handles = handles1 + handles2
@@ -489,16 +484,16 @@ def outputResults():
             #burn rate vs time and burn area vs time (imperial)
             fig, ax1 = plt.subplots(figsize=(13, 8))
             #plot burn rate
-            ax1.plot(time, ds_dt_imperial, marker='o', linestyle='-', color="b", label="Burn rate ds/dt")
+            ax1.plot(time, ds_dt_imperial, marker='o', linestyle='-', color="b", label=r"Burn rate $ds/dt$")
             ax1.set_xlabel("Time (sec)")
             ax1.set_ylabel("Burn rate (in/sec)")
             handles1, labels1 = ax1.get_legend_handles_labels()
             #plot burn area
             ax2 = ax1.twinx() #creates another axis that shares the x-axis
-            ax2.plot(time, A_b_imperial, marker='^', linestyle='-', color="r", label="Burn area A_b")
+            ax2.plot(time, A_b_imperial, marker='^', linestyle='-', color="r", label=r"Burn area $A_{b}$")
             #ax2.set_ylim(top=max(A_b_imperial)*2)
             #ax2.set_ylim(bottom=0)
-            ax2.set_ylabel("Burn area (in^2)")
+            ax2.set_ylabel(r"Burn area ($in^{2}$)")
             handles2, labels2 = ax2.get_legend_handles_labels()
             #show
             all_handles = handles1 + handles2
@@ -526,7 +521,7 @@ def outputResults():
                  pd.DataFrame({"Cumulative Regression s (in)": s_imperial}),
                  pd.DataFrame({"Instantaneous Burn Rate ds/dt (in/sec)": ds_dt_imperial})], axis=1)
 
-            #write more data for the fire to the spreadsheet
+            #write more data for the fire to the spreadsheet --------------------------------------
             burn_time = calc.get_burn_time()
             impulse = calc.get_impulse() #N*s
             press_integral = calc.get_press_integral()/1000000 #MPa*s
@@ -537,8 +532,10 @@ def outputResults():
             c_star_imperial = c_star*3.280839895
             full_avg_press = press_integral / burn_time #average pressure calculated using the full pressure integral
             full_avg_press_imperial = press_integral_imperial / burn_time
-            # ---------------------- average pressure and average burnrate calculation using only points with a pressure greater than the average pressure calculated above using the full pressure integral
-            #(note this method may have issues if a fire has extremely noisy pressure data or if there is a massive drop in pressure and then a subsequent massive increase in pressure that should be considered, HOWEVER, I think it should generally be more accurate)
+
+            #average pressure and average burnrate calculation using only points with a pressure greater than the average pressure calculated above using the full pressure integral (denoted as "high" since these values will be higher than the values which take all points into account)
+            #(note this method may have issues if a fire has extremely noisy pressure data or if there is a massive drop in pressure and then a subsequent massive increase in pressure that should be considered)
+            #(additionally  note that the user is responsible for making decisions about which data and which calculations are most relevant for their use case)
             press_trimmed = np.array([])
             time_trimmed = np.array([])
             burnrate_trimmed = np.array([])
@@ -558,7 +555,7 @@ def outputResults():
             high_avg_press_imperial = high_avg_press*145.03773773
             high_avg_burnrate = np.trapezoid(burnrate_trimmed, time_trimmed) / (time_trimmed[len(time_trimmed)-1] - time_trimmed[0])
             high_avg_burnrate_imperial = np.trapezoid(burnrate_trimmed_imperial, time_trimmed) / (time_trimmed[len(time_trimmed)-1] - time_trimmed[0])
-            # ----------------------------------------------------------------------------------------------------------------------------------- end avg pressure and average burnrate calculation
+            
             burnrate_integral = np.trapezoid(ds_dt, time)
             burnrate_integral_imperial = np.trapezoid(ds_dt_imperial, time)
             avg_burnrate = burnrate_integral / burn_time
@@ -576,6 +573,7 @@ def outputResults():
             extra_data_arr = np.array([throat_area, throat_diameter, throat_area_imperial, throat_diameter_imperial, burn_time, impulse, press_integral, c_star, full_avg_press, avg_burnrate, high_avg_press, high_avg_burnrate, impulse_imperial, press_integral_imperial, c_star_imperial, full_avg_press_imperial, avg_burnrate_imperial, high_avg_press_imperial, high_avg_burnrate_imperial, isp])
             extra_data_arr_strings = np.array(["Throat Area (mm^2)", "Throat Diameter (mm)", "Throat Area (in^2)", "Throat Diameter (in)", "Burn Time (sec)", "Impulse (N*s)", "Full Pressure Integral (MPa*s)", "C* (m/s)", "Average Pressure (using full fire) (MPa)", "Average Burnrate (using full fire) (mm/s)", "Average Pressure (using points above average) (MPa)", "Average Burnrate (using points above average) (mm/s)", "Impulse (lbf*s)", "Full Pressure Integral (psig*s)", "C* (ft/s)", "Average Pressure (using full fire) (psig)", "Average Burnrate (in/s) (using full fire)", "Average Pressure (using points above average) (psig)", "Average Burnrate (using points above average) (in/s)", "ISP (sec)"])
             finalDataFrame = pd.concat([finalDataFrame, pd.DataFrame({"str": extra_data_arr_strings}), pd.DataFrame({"dat": extra_data_arr})], axis=1)
+            # --------------------------------
 
             #write final dataframe to excel
             finalDataFrame.to_excel(excelWriter, sheet_name=str(y))
@@ -608,7 +606,7 @@ def outputResults():
         strings = np.array(["Metric (MPa and mm):", "a", "n", "Imperial (psig and in):", "a", "n", " ", "R^2"])
         data = np.array([None, a, n, None, a_imperial, n_imperial, None, r_squared])
         characterizationDataframe = pd.concat([pd.DataFrame({"str": strings}), pd.DataFrame({"dat": data})], axis=1)
-        characterizationDataframe.to_excel(excelWriter, sheet_name="CharacterizationOld")
+        characterizationDataframe.to_excel(excelWriter, sheet_name="Characterization")
 
         #output characterization plots (for original average pressure and burnrate calculation)
         x_metric = np.linspace(0, 6, 300)
@@ -618,6 +616,7 @@ def outputResults():
         plt.scatter(avgPress, avgBurnrate, marker='o', c='b', label="Average Burnrate vs. Average Pressure")
         plt.xlabel("Average Pressure (MPa)")
         plt.ylabel("Average Burn Rate (mm/sec)")
+        plt.annotate(r"$r=aP^{n}$"+"\n"+r"$a=$"+str(a)+"\n"+r"$n=$"+str(n), (max(x_metric)-(max(x_metric)*0.4), min(y_metric)+(min(y_metric)*0.2)), c="black")
         plt.savefig(outputFileDir + "/characterization_metric_" + str(x))
         plt.close()
 
@@ -628,6 +627,7 @@ def outputResults():
         plt.scatter(avgPressImperial, avgBurnrateImperial, marker='o', c='b', label="Average Burnrate vs. Average Pressure")
         plt.xlabel("Average Pressure (psig)")
         plt.ylabel("Average Burn Rate (in/sec)")
+        plt.annotate(r"$r=aP^{n}$"+"\n"+r"$a=$"+str(a_imperial)+"\n"+r"$n=$"+str(n_imperial), (max(x_imperial)-(max(x_imperial)*0.4), min(y_imperial)+(min(y_imperial)*0.2)), c="black")
         plt.savefig(outputFileDir + "/characterization_imperial_" + str(x))
         plt.close()
 
@@ -643,7 +643,7 @@ def outputResults():
         strings2 = np.array(["Metric (MPa and mm):", "a", "n", "Imperial (psig and in):", "a", "n", " ", "R^2"])
         data2 = np.array([None, a2, n2, None, a2_imperial, n2_imperial, None, r_squared2])
         characterizationDataframe = pd.concat([pd.DataFrame({"str": strings2}), pd.DataFrame({"dat": data2})], axis=1)
-        characterizationDataframe.to_excel(excelWriter, sheet_name="CharacterizationNew")
+        characterizationDataframe.to_excel(excelWriter, sheet_name="Characterization(HighAvg)")
 
         #output characterization plots (for updated average pressure and burnrate calculation)
         x_metric = np.linspace(0, 8, 300)
@@ -653,6 +653,7 @@ def outputResults():
         plt.scatter(avgPressHigh, avgBurnrateHigh, marker='o', c='b', label="Average Burnrate vs. Average Pressure")
         plt.xlabel("Average Pressure (MPa)")
         plt.ylabel("Average Burn Rate (mm/sec)")
+        plt.annotate(r"$r=aP^{n}$"+"\n"+r"$a=$"+str(a2)+"\n"+r"$n=$"+str(n2), (max(x_metric)-(max(x_metric)*0.4), min(y_metric)+(min(y_metric)*0.2)), c="black")
         plt.savefig(outputFileDir + "/characterization_metric_new_" + str(x))
         plt.close()
 
@@ -663,10 +664,15 @@ def outputResults():
         plt.scatter(avgPressImperialHigh, avgBurnrateImperialHigh, marker='o', c='b', label="Average Burnrate vs. Average Pressure")
         plt.xlabel("Average Pressure (psig)")
         plt.ylabel("Average Burn Rate (in/sec)")
+        plt.annotate(r"$r=aP^{n}$"+"\n"+r"$a=$"+str(a2_imperial)+"\n"+r"$n=$"+str(n2_imperial), (max(x_imperial)-(max(x_imperial)*0.4), min(y_imperial)+(min(y_imperial)*0.2)), c="black")
         plt.savefig(outputFileDir + "/characterization_imperial_new_" + str(x))
         plt.close()
 
-        #TODO: delete sheet named "Sheet" in the excel workbook
+        #delete "Sheet" in the Excel workbook to clean up
+        workbook = excelWriter.book
+        if "Sheet" in workbook.sheetnames: workbook.remove(workbook["Sheet"])
+
+        #close excelWriter
         excelWriter.close()
 
         print("Wrote all data to Excel and output figures for propellant #" + str(x+1))
@@ -694,7 +700,7 @@ def main():
     useGUI()
     readInputFile()
     readExcelData()
-    printAllTestFireListAttributes()
+    #printAllTestFireListAttributes() #helper function for debug if needed
 
     #characterization calculations
     conversionsAndDefinitions()
