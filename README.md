@@ -58,7 +58,7 @@ Currently, running two different propellants (i.e. two sets of static fires) at 
 <br>
 
 ## Running the Code
-The main method for this program is contained in `Characterization.py`. It can be called from the command line: `python <path to Characterization.py>` or run from your preferred IDE. Just ensure you have all the requisite libraries installed and updated. Currently there is no single-file .exe distribution, however, this would be one of the next steps towards making this more user-friendly.
+The main method for this program is contained in `Characterization.py`. It can be called from the command line: `python Characterization.py` (assuming the terminal is open to the directory where `Characterization.py` is contained) or run from your preferred IDE. Just ensure you have all the requisite libraries installed and updated. Currently there is no single-file .exe distribution, however, this would be one of the next steps towards making this more user-friendly.
 
 When the code is run, a GUI window will open:
 
