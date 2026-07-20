@@ -3,25 +3,22 @@ Program for interpretation of subscale static fire data to characterize propella
 Developed for Raider Aerospace Society (Space Raiders).
 
 NOTE: CURRENTLY ONLY BATES GRAINS ARE SUPPORTED!
-
 <br>
 
-### Reference
+## Reference
 Nakka characterization resources:
 [Nakka PTBurn](https://www.nakka-rocketry.net/ptburn.html)
 [Nakka Burnrate](https://www.nakka-rocketry.net/burnrate.html)
 [Nakka Burnrate Simple](https://www.nakka-rocketry.net/burnrate-simple.htm)
 
 This program uses the method listed at the PTBurn link to calculate the regression and burn rate, but uses the average burn rate and pressure over several different static test fires to obtain a more representative solution.
-
 <br>
 
-### Dependencies
+## Dependencies
 If you are not using the .exe release (still to come), the libraries imported in the Characterization.py file are required: you must have these libraries installed for this software to run correctly. If you believe there is an error caused by a library version issue, please contact me; there have been issues with this in the past. Mandatory libraries include: `os`, `pandas`, `scipy`, `numpy`, `math`, `matplotlib`, `openpyxl`, `pyyaml`, `FreeSimpleGUI`.
-
 <br>
 
-### Configuration File Formatting
+## Configuration File Formatting
 Sample .yaml file:
 ```
 pressUnits: "psig" #"psig" or kPa
@@ -58,10 +55,9 @@ Configuration file formatting details:
 The file should be a .yaml file and the full path to the file must be included as the first argument in the command line call to run the Characterization.py script.
 
 Currently, running two different propellants (i.e. two sets of static fires) at the same time is not supported due to the current structure of the .yaml file and GUI.
-
 <br>
 
-### Running the Code
+## Running the Code
 The main method for this program is contained in `Characterization.py`. It can be called from the command line: `python <path to Characterization.py>` or run from your preferred IDE. Just ensure you have all the requisite libraries installed and updated. Currently there is no single-file .exe distribution, however, this would be one of the next steps towards making this more user-friendly.
 
 When the code is run, a GUI window will open:
@@ -81,18 +77,15 @@ The code outputs a variety of simple plots for quick sanity checks (in the futur
 <img width="1300" height="800" alt="characterization_imperial_0" src="https://github.com/user-attachments/assets/004f8393-e9e7-4089-bed4-7140ab8d5baf" />
 <img width="1867" height="777" alt="image" src="https://github.com/user-attachments/assets/0343fc22-4816-4bb1-89ab-a3a0f54fe849" />
 <img width="353" height="267" alt="image" src="https://github.com/user-attachments/assets/eb0dd6d7-1436-4789-9da0-5d8e41ea25f7" />
-
 <br>
 
-### Input Data Excel Formatting
+## Input Data Excel Formatting
 Each workbook used with this script must be composed of worksheets that include data for each fire. The first column of each sheet should be time, the second column should be pressure, and the third column should be thrust. It doesn't matter if the data has a header or not (but if it does, this header must not be more than one row). Example inputs and outputs are included in this repository. Ensure your entries follow the established data input format, or the code will not work.
-
 <br>
 
-### CHECK YOUR INPUTS!
+## CHECK YOUR INPUTS!
 The most common cause of inacurrate output is inaccurate input!
-
 <br>
 
-### Version/Update Notes
+## Version/Update Notes
 Please note that this should be considered something like a v0.4 release. It has full functionality in terms of being able to characterize propellants, however, it does not have a single-file .exe distribution, the plots could be improved, and some additional features and statistics could be added. This repository is licensed under GNU GPLv3, so changes and improvements to the functionality of this program are welcomed.
