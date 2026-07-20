@@ -13,13 +13,11 @@ Nakka characterization resources:
 This program uses the method listed at the PTBurn link to calculate the regression and burn rate, but uses the average burn rate and pressure over several different static test fires to obtain a more representative solution.
 
 ### Dependencies
-If you are not using the .exe release (still to come), the libraries imported in the Characterization.py file are required: you must have these libraries installed for this software to run correctly. If you believe there is an error caused by a library version issue, please contact me; there have been issues with this in the past. Mandatory libraries include: `argparse`, `os`, `pandas`, `scipy`, `numpy`, `math`, `matplotlib`, `openpyxl`, `pyyaml`, `FreeSimpleGUI`.
+If you are not using the .exe release (still to come), the libraries imported in the Characterization.py file are required: you must have these libraries installed for this software to run correctly. If you believe there is an error caused by a library version issue, please contact me; there have been issues with this in the past. Mandatory libraries include: `os`, `pandas`, `scipy`, `numpy`, `math`, `matplotlib`, `openpyxl`, `pyyaml`, `FreeSimpleGUI`.
 
 ### Configuration File Formatting
 Sample .yaml file:
 ```
-dataFilepath: '.\example_data_propellant1.xlsx' #full path OR relative path with respect to the .yaml file to the .xlsx data file containing formatted static fire data 
-
 pressUnits: "psig" #"psig" or kPa
 thrustUnits: "lbf" #"lbf" or "N"
 
@@ -39,7 +37,6 @@ densityUnits: "lb/in3" #"lb/in3" or "kg/m3"
 density: [0.0589986, 0.0589986, 0.0589986] #array of density values for each fire
 ```
 Configuration file formatting details:
-* `dataFilepath`: (explanation). This file should have worksheets with data from each static fire.
 * `pressUnits`: Units for pressure data. Only `psig` and `kPa` (psi gauge and kilopascals) are accepted entries.
 * `thrustUnits`: Units for thrust data. Only `lbf` and `N` (pounds-force and Newtons) are accepted entries.
 * `psmoothing` & `tsmoothing`: Array containing data denoting whether smoothing is turned on or off for pressure (`psmoothing`) and thrust (`tsmoothing`) data for each fire. Entries of -1 denote smoothing turned off, and values between 0 and 1 directly correspond to the window spacing for smoothing (i.e. how much smoothing there should be; a higher value corresponds to more smoothing).
@@ -54,19 +51,32 @@ Configuration file formatting details:
 
 The file should be a .yaml file and the full path to the file must be included as the first argument in the command line call to run the Characterization.py script.
 
-Currently, running two different propellants (i.e. two sets of static fires) at the same time is not supported.
+Currently, running two different propellants (i.e. two sets of static fires) at the same time is not supported due to the current structure of the .yaml file and GUI.
 
 ### Running the Code
-The main method for this program is contained in `Characterization.py`. It can be called from the command line: `python <path to Characterization.py>` or run from your preferred IDE. Currently there is no single-file .exe distribution, however, this would be one of the next steps towards making this more user-friendly.
+The main method for this program is contained in `Characterization.py`. It can be called from the command line: `python <path to Characterization.py>` or run from your preferred IDE. Just ensure you have all the requisite libraries installed and updated. Currently there is no single-file .exe distribution, however, this would be one of the next steps towards making this more user-friendly.
+
+When the code is run, a GUI window will open:
+<img width="512" height="382" alt="image" src="https://github.com/user-attachments/assets/81bfaeae-d05a-4677-9750-76d00842930f" />
+Click the "Browse" button near the entries for each file and select the input files (the .yaml for the YAML input, the .xlsx for the input static fire data, and the directory where the folder for the output files should be created).
+
+Once all the files have been selected, click the "Perform Characterization Calculations" button. This will begin the characterization calculations, which usually take only a few seconds. Writing to the output Excel file can take longer depending on how much data there is (i.e. how many lines are in the input Excel). Status messages will be printed to the terminal; the final two lines should read:
+<img width="555" height="42" alt="image" src="https://github.com/user-attachments/assets/24e1e4a5-de11-430c-97df-15b7e0030760" />
+
+These two lines printed to the terminal means that the program has concluded and the output files can be viewed in the new folder (named "out1", "out2", or similar) created in the directory that was selected as the output folder.
+
+The code outputs a variety of simple plots for quick sanity checks (in the future these plots should be refined), as well as an Excel sheet with all the calculated data from all static fires in both Imperial and SI units and, of course, the burn rate laws. Please note: after the output directory is selected, the program checks for previous folders (`out1`, `out2`, etc.) in the chosen directory and names the new output folder with this in mind so that any new output will not overwrite any previous output. Some screenshots of sample output data are below:
+<img width="1300" height="800" alt="0,1__burnrate-burnarea_imperial" src="https://github.com/user-attachments/assets/75c38ca1-1c54-4e1c-8c34-39230958fb31" />
+<img width="1300" height="800" alt="0,1__thrust-pressure_imperial" src="https://github.com/user-attachments/assets/9ac15d00-8ae0-4e7a-85c8-5f0f1c2e2e23" />
+<img width="1300" height="800" alt="characterization_imperial_0" src="https://github.com/user-attachments/assets/004f8393-e9e7-4089-bed4-7140ab8d5baf" />
+<img width="1867" height="777" alt="image" src="https://github.com/user-attachments/assets/0343fc22-4816-4bb1-89ab-a3a0f54fe849" />
+<img width="353" height="267" alt="image" src="https://github.com/user-attachments/assets/eb0dd6d7-1436-4789-9da0-5d8e41ea25f7" />
 
 ### Input Data Excel Formatting
 Each workbook used with this script must be composed of worksheets that include data for each fire. The first column of each sheet should be time, the second column should be pressure, and the third column should be thrust. It doesn't matter if the data has a header or not (but if it does, this header must not be more than one row). Example inputs and outputs are included in this repository. Ensure your entries follow the established data input format, or the code will not work.
 
-### Outputs
-The code outputs a variety of simple plots for quick sanity checks (in the future these plots should be refined), as well as an Excel sheet with all the calculated data from all static fires in both Imperial and SI units and, of course, the burn rate laws. Please note: after the output directory is selected, the program checks for previous folders (`out1`, `out2`, etc.) in the chosen directory and names the new output folder with this in mind so that any new output will not overwrite any previous output.
-
 ### CHECK YOUR INPUTS!
 The most common cause of inacurrate output is inaccurate input!
 
-### Release Notes
-Please note that I consider this a v0.4 release. It has full functionality in terms of being able to characterize propellants, however, it does not have a single-file .exe distribution, the plots could be improved, and some additional features and statistics could be added. This repository is licensed under GNU GPLv3, so changes and improvements to the functionality of this program are welcomed.
+### Version/Update Notes
+Please note that this should be considered something like a v0.4 release. It has full functionality in terms of being able to characterize propellants, however, it does not have a single-file .exe distribution, the plots could be improved, and some additional features and statistics could be added. This repository is licensed under GNU GPLv3, so changes and improvements to the functionality of this program are welcomed.
